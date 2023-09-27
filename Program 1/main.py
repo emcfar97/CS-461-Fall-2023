@@ -20,13 +20,10 @@ class Graph:
             
             self.add_edge(nodes[town_a], nodes[town_b])
   
-  
     def add_edge(self, u, v):
         'Function to add an edge to graph, with cost computed from Euclidean distance'
         
         self.graph[u].append((v, u % v))
-    
-    def calculate_cost(self): pass
     
     def clear_graph(self):
         'Mark all node as unvisted'
@@ -40,11 +37,9 @@ class Graph:
             
         # Loop to iterate over every edge of the graph
         for edge in self.graph:
-        for edge in self.graph:
             
             a, b = edge[0], edge[1]
             
-        # return graph
         # return graph
     
     def breadth_first_search(self, root):
@@ -84,7 +79,6 @@ class Graph:
                 
                 self.DFSUtil(neighbour, visited)
  
-    def depth_first_search(self, v):
     def depth_first_search(self, v):
         'The function to do DFS traversal. It uses recursive DFSUtil()'
  
@@ -451,7 +445,6 @@ while start_town is None and end_town is None: # set starting/ending towns
         print(
             f'Neither {start_town} or {end_town} are in database. Please try again.')
     
-while True: # main program
 while True: # main program
     
     user_input = input(
