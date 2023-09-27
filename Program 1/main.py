@@ -1,6 +1,6 @@
-import csv, pathlib
+import csv, pathlib, timeit
 from math import dist
-from collections import defaultdict
+from collections import defaultdict, deque
 from queue import PriorityQueue
 
 class Graph:
@@ -12,63 +12,60 @@ class Graph:
         # Default dictionary to store graph
         self.graph = defaultdict(list)
         
-        # No. of vertices
+        # Populate graph
         for vertice in vertices:
             
             town_a, town_b = vertice.strip().split()
             
             self.add_edge(nodes[town_a], nodes[town_b])
- 
+  
     def add_edge(self, u, v):
-        'Function to add an edge to graph, with cost compute from Euclidean distance'
+        'Function to add an edge to graph, with cost computed from Euclidean distance'
         
         self.graph[u].append((v, u % v))
     
     def calculate_cost(self): pass
     
+    def clear_graph(self):
+        'Mark all node as unvisted'
+        
+        for node in self.graph:
+            
+            node.visited = False
+        
     def undirected_search(self):
         'Function to print undirected search of graph'
             
         # Loop to iterate over every edge of the graph
-        for edge in edges:
+        for edge in self.graph:
             
             a, b = edge[0], edge[1]
             
-            # Creating the graph as adjacency list
-            graph[a].append(b)
-            graph[b].append(a)
-            
-        return graph
+        # return graph
     
-    def breadth_first_search(self, s):
+    def breadth_first_search(self, root):
         'Function to print a BFS of graph'
- 
-        # Mark all the vertices as not visited
-        visited = [False] * (max(self.graph) + 1)
- 
-        # Create a queue for BFS
-        queue = []
- 
-        # Mark the source node as visited and enqueue it
-        queue.append(s)
-        visited[s] = True
+  
+        # Create queues for visited and unvisited nodes
+        visited, queue = set(), deque([root])
+        visited.add(root)
  
         while queue:
  
-            # Dequeue a vertex from queue and print it
-            s = queue.pop(0)
-            print(s, end=" ")
- 
-            # Get all adjacent vertices of the dequeued vertex s.
-            # If an adjacent has not been visited,
-            # then mark it visited and enqueue it
-            for i in self.graph[s]:
+            # Dequeue a vertex from queue
+            vertex = queue.popleft()
+            print(str(vertex) + " ", end="")
+
+            # If not visited, mark it as visited, and enqueue it
+            for neighbour in self.graph[vertex]:
                 
-                if visited[i] == False:
-                
-                    queue.append(i)
-                    visited[i] = True
-     
+                if neighbour not in visited:
+                    
+                    visited.add(neighbour)
+                    queue.append(neighbour)
+        
+        print()
+        
     def DFSUtil(self, v, visited):
         'A function used by DFS'
  
@@ -237,14 +234,16 @@ class Town():
         
         self.name = name
         self.position = position
+        self.vistited = False
     
-    def __repr__(self):
-        
-        return f'{self.name} {self.position}'
+    def __repr__(self): return f'{self.name} {self.position}'
     
-    def __mod__(self, other):
-        
-        return dist(self.position, other.position)
+    def __mod__(self, other): return dist(self.position, other.position)
+    
+    def set_visited(self): self.visited = not self.visited
+    
+    def get_visited(self): return self.visited
+    
 class Node():
     'Node class for A* Pathfinding'
 
@@ -263,6 +262,7 @@ class Node():
 
 towns_path = pathlib.Path(r'Program 1\coordinates.csv')
 adjacencies_path = pathlib.Path(r'Program 1\Adjacencies.txt')
+
 towns = {}
 
 with open(towns_path) as csv_file:
@@ -277,20 +277,16 @@ with open(towns_path) as csv_file:
 graph = Graph(towns, adjacencies_path.read_text().split('\n'))
 
 start_town = end_town = None
-# start_town, end_town = 'Winfield', 'Oxford'
 
 while start_town is None and end_town is None: # set starting/ending towns
     
-    start_town = input(
-        'Please choose a starting town: '
-        )
-    end_town = input(
-        'Please choose a ending town: '
-        )
+    start_town = input('Please choose a starting town: ')
+    end_town = input('Please choose a ending town: ')
     
     if start_town in towns and end_town in towns:
         
-        town = [start_town, end_town]
+        start_town, end_town = towns[start_town], towns[end_town]
+        print()
 
     elif start_town not in towns and end_town in towns:
         
@@ -299,6 +295,7 @@ while start_town is None and end_town is None: # set starting/ending towns
     elif end_town not in towns and start_town in towns:
         
         print(f'End town {end_town} is not in database. Please try again.')
+        
     else:
         
         print(
@@ -312,27 +309,33 @@ while True: # main program
     
     if   user_input == '1': # Undirected (blind) brute-force approach
         
-        graph.undirected_search()
+        time = timeit.timeit(graph.undirected_search(start_town))
+        print(f'Undirected (blind) brute-force approach took {time} sec')
     
     elif user_input == '2': # Breadth-first search
     
-        graph.breadth_first_search()
+        time = timeit.timeit(graph.breadth_first_search(start_town))
+        print(f'Breadth-first search took {time} sec')
 
     elif user_input == '3': # Depth-first search
     
-        graph.depth_first_search
+        time = timeit.timeit(graph.depth_first_search(start_town, end_town))
+        print(f'Depth-first search took {time} sec')
 
     elif user_input == '4': # ID-DFS search
     
-        graph.ID_DFS()
+        time = timeit.timeit(graph.ID_DFS(start_town, end_town))
+        print(f'ID-DFS search took {time} sec')
 
     elif user_input == '5': # Best-first search
     
-        graph.best_first_search()
+        time = timeit.timeit(graph.best_first_search(start_town, end_town))
+        print(f'Best-first search took {time} sec')
 
     elif user_input == '6': # A* search
     
-        graph.astar()
+        time = timeit.timeit(graph.astar(start_town, end_town))
+        print(f'A* search took {time} sec')
         
     elif user_input == '7': # Exit
     
