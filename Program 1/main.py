@@ -1,22 +1,42 @@
-import csv, pathlib
+import csv, pathlib, timeit
+from math import dist
 from collections import defaultdict
 from queue import PriorityQueue
 
 class Graph:
     'This class represents a directed graph using adjacency list representation'
  
-    def __init__(self):
+    def __init__(self, nodes, vertices):
         'Constructor'
  
         # Default dictionary to store graph
         self.graph = defaultdict(list)
- 
-    def addEdge(self, u, v):
-        'Function to add an edge to graph'
         
-        self.graph[u].append(v)
+        # No. of vertices
+        for vertice in vertices:
+            
+            town_a, town_b = vertice.strip().split()
+            
+            self.add_edge(nodes[town_a], nodes[town_b])
  
-    def BFS(self, s):
+    def add_edge(self, u, v):
+        'Function to add an edge to graph, with cost compute from Euclidean distance'
+        
+        self.graph[u].append((v, u % v))
+    
+    def calculate_cost(self): pass
+    
+    def undirected_search(self):
+        'Function to print undirected search of graph'
+            
+        # Loop to iterate over every edge of the graph
+        for edge in self.graph:
+            
+            a, b = edge[0], edge[1]
+            
+        # return graph
+    
+    def breadth_first_search(self, s):
         'Function to print a BFS of graph'
  
         # Mark all the vertices as not visited
@@ -44,21 +64,6 @@ class Graph:
                 
                     queue.append(i)
                     visited[i] = True
-            
-class Graph:
-    'This class represents a directed graph using adjacency list representation'
- 
-    def __init__(self):
-        'Constructor'
- 
-        # Default dictionary to store graph
-        self.graph = defaultdict(list)
- 
-     
-    def addEdge(self, u, v):
-        'Function to add an edge to graph'
-        
-        self.graph[u].append(v)
      
     def DFSUtil(self, v, visited):
         'A function used by DFS'
@@ -74,7 +79,7 @@ class Graph:
                 
                 self.DFSUtil(neighbour, visited)
  
-    def DFS(self, v):
+    def depth_first_search(self, v):
         'The function to do DFS traversal. It uses recursive DFSUtil()'
  
         # Create a set to store visited vertices
@@ -82,23 +87,6 @@ class Graph:
  
         # Call the recursive helper function to print DFS traversal
         self.DFSUtil(v, visited)
-
-class Graph:
-    'This class represents a directed graph using adjacency list representation'
-    
-    def __init__(self,vertices):
-        'Constructor'
- 
-        # No. of vertices
-        self.V = vertices
- 
-        # default dictionary to store graph
-        self.graph = defaultdict(list)
- 
-    def addEdge(self,u,v):
-        'function to add an edge to graph'
-        
-        self.graph[u].append(v)
  
     def DLS(self,src,target,maxDepth):
         'A function to perform a Depth-Limited search from given source "src"'
@@ -117,8 +105,8 @@ class Graph:
 
         return False
  
-    def IDDFS(self,src, target, maxDepth):
-        'IDDFS to search if target is reachable from v. It uses recursive DLS()'
+    def ID_DFS(self,src, target, maxDepth):
+        'ID-DFS to search if target is reachable from v. It uses recursive DLS()'
  
         # Repeatedly depth-limit search till the maximum depth
         for i in range(maxDepth):
@@ -128,16 +116,166 @@ class Graph:
                 return True
             
         return False
-            
+    
+    def best_first_search(self, actual_Src, target, n):
+        'Function to print a BFS of graph'
+
+        self.graph = [[] for i in range(v)]
+        visited = [False] * n
+        pq = PriorityQueue()
+        pq.put((0, actual_Src))
+        visited[actual_Src] = True
+        
+        while pq.empty() == False:
+
+            u = pq.get()[1]
+            # Displaying the path having lowest cost
+            print(u, end=" ")
+
+            if u == target:
+
+                break
+    
+            for v, c in self.graph[u]:
+
+                if visited[v] == False:
+
+                    visited[v] = True
+                    pq.put((c, v))
+        print()
+    
+    def astar(maze, start, end):
+        'Returns a list of tuples as a path from the given start to the given end in the given maze'
+
+        # Create start and end node
+        start_node = Node(None, start)
+        start_node.g = start_node.h = start_node.f = 0
+        end_node = Node(None, end)
+        end_node.g = end_node.h = end_node.f = 0
+
+        # Initialize both open and closed list
+        open_list = []
+        closed_list = []
+
+        # Add the start node
+        open_list.append(start_node)
+
+        # Loop until you find the end
+        while len(open_list) > 0:
+
+            # Get the current node
+            current_node = open_list[0]
+            current_index = 0
+            for index, item in enumerate(open_list):
+                if item.f < current_node.f:
+                    current_node = item
+                    current_index = index
+
+            # Pop current off open list, add to closed list
+            open_list.pop(current_index)
+            closed_list.append(current_node)
+
+            # Found the goal
+            if current_node == end_node:
+                path = []
+                current = current_node
+                while current is not None:
+                    path.append(current.position)
+                    current = current.parent
+                return path[::-1] # Return reversed path
+
+            # Generate children
+            children = []
+            for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent squares
+
+                # Get node position
+                node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+
+                # Make sure within range
+                if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
+                    continue
+
+                # Make sure walkable terrain
+                if maze[node_position[0]][node_position[1]] != 0:
+                    continue
+
+                # Create new node
+                new_node = Node(current_node, node_position)
+
+                # Append
+                children.append(new_node)
+
+            # Loop through children
+            for child in children:
+
+                # Child is on the closed list
+                for closed_child in closed_list:
+                    if child == closed_child:
+                        continue
+
+                # Create the f, g, and h values
+                child.g = current_node.g + 1
+                child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+                child.f = child.g + child.h
+
+                # Child is already in the open list
+                for open_node in open_list:
+                    if child == open_node and child.g > open_node.g:
+                        continue
+
+                # Add the child to the open list
+                open_list.append(child)
+
+class Town():
+    'Town class for Graph'
+    
+    def __init__(self, name, position):
+        
+        self.name = name
+        self.position = position
+    
+    def __repr__(self):
+        
+        return f'{self.name} {self.position}'
+    
+    def __mod__(self, other):
+        
+        return dist(self.position, other.position)
+class Node():
+    'Node class for A* Pathfinding'
+
+    def __init__(self, parent=None, position=None):
+        
+        self.parent = parent
+        self.position = position
+
+        self.g = 0
+        self.h = 0
+        self.f = 0
+
+    def __eq__(self, other):
+        
+        return self.position == other.position
+
 towns_path = pathlib.Path(r'Program 1\coordinates.csv')
 adjacencies_path = pathlib.Path(r'Program 1\Adjacencies.txt')
+towns = {}
 
-towns = csv.DictReader(towns_path)
-adjacencies = adjacencies_path.read_text()
+with open(towns_path) as csv_file:
+    
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    line_count = 0
+    
+    for row in csv_reader:
+        
+        towns[row[0]] = Town(row[0], (float(row[1]), float(row[2])))
 
-town = None
+graph = Graph(towns, adjacencies_path.read_text().split('\n'))
 
-while town is None: # Sey starting and ending towns
+start_town = end_town = None
+# start_town, end_town = 'Winfield', 'Oxford'
+
+while start_town is None and end_town is None: # set starting/ending towns
     
     start_town = input(
         'Please choose a starting town: '
@@ -162,7 +300,7 @@ while town is None: # Sey starting and ending towns
         print(
             f'Neither {start_town} or {end_town} are in database. Please try again.')
     
-while True: # Main program
+while True: # main program
     
     user_input = input(
         'Choose from:\n1 - Undirected (blind) brute-force approach\n2 - Breadth-first search\n3 - Depth-first search\n4 - ID-DFS search\n5 - Best-first search\n6 - A* search\n7 - Exit\n'
@@ -170,28 +308,34 @@ while True: # Main program
     
     if   user_input == '1': # Undirected (blind) brute-force approach
         
-        pass
+        time = timeit.timeit(graph.undirected_search())
+        print(f'Undirected (blind) brute-force approach took {time} sec')
     
     elif user_input == '2': # Breadth-first search
     
-        pass
+        time = timeit.timeit(graph.breadth_first_search())
+        print(f'Breadth-first search took {time} sec')
 
     elif user_input == '3': # Depth-first search
     
-        pass
+        time = timeit.timeit(graph.depth_first_search)
+        print(f'Depth-first search took {time} sec')
 
     elif user_input == '4': # ID-DFS search
     
-        pass
+        time = timeit.timeit(graph.ID_DFS())
+        print(f'ID-DFS search took {time} sec')
 
     elif user_input == '5': # Best-first search
     
-        pass
+        time = timeit.timeit(graph.best_first_search())
+        print(f'Best-first search took {time} sec')
 
     elif user_input == '6': # A* search
     
-        pass
-
+        time = timeit.timeit(graph.astar())
+        print(f'A* search took {time} sec')
+        
     elif user_input == '7': # Exit
     
-        pass
+        break
