@@ -77,7 +77,6 @@ class Graph:
         # Call the recursive helper function to print DFS traversal
         self.DFSUtil(v, visited)
  
- 
     def DLS(self,src,target,maxDepth):
         'A function to perform a Depth-Limited search from given source "src"'
  
@@ -298,7 +297,7 @@ while True: # main program
     if user_input == '1': # Breadth-first search
     
         time = timeit.timeit(
-            'graph.breadth_first_search(start_town)', globals=globals()
+            'graph.breadth_first_search(start_town)', globals=globals(), number=1000
             )
         print(f'Breadth-first search took {time} sec')
 
