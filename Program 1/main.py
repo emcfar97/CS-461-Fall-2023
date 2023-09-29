@@ -233,14 +233,16 @@ class Town():
         
         self.name = name
         self.position = position
+        self.vistited = False
     
-    def __repr__(self):
-        
-        return f'{self.name} {self.position}'
+    def __repr__(self): return f'{self.name} {self.position}'
     
-    def __mod__(self, other):
-        
-        return dist(self.position, other.position)
+    def __mod__(self, other): return dist(self.position, other.position)
+    
+    def set_visited(self): self.visited = not self.visited
+    
+    def get_visited(self): return self.visited
+    
 class Node():
     'Node class for A* Pathfinding'
 
@@ -256,9 +258,6 @@ class Node():
     def __eq__(self, other):
         
         return self.position == other.position
-
-<<<<<<< HEAD
-=======
     
     def best_first_search(self, actual_Src, target, n):
         'Function to print a BFS of graph'
@@ -402,7 +401,6 @@ class Node():
         
         return self.position == other.position
 
->>>>>>> 3974571c411d7149a1eda7f10d78821ff889b936
 towns_path = pathlib.Path(r'Program 1\coordinates.csv')
 adjacencies_path = pathlib.Path(r'Program 1\Adjacencies.txt')
 towns = {}
@@ -419,33 +417,11 @@ with open(towns_path) as csv_file:
 graph = Graph(towns, adjacencies_path.read_text().split('\n'))
 
 start_town = end_town = None
-# start_town, end_town = 'Winfield', 'Oxford'
-
-while start_town is None and end_town is None: # set starting/ending towns
-towns = {}
-
-with open(towns_path) as csv_file:
-    
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
-    
-    for row in csv_reader:
-        
-        towns[row[0]] = Town(row[0], (float(row[1]), float(row[2])))
-
-graph = Graph(towns, adjacencies_path.read_text().split('\n'))
-
-start_town = end_town = None
-# start_town, end_town = 'Winfield', 'Oxford'
 
 while start_town is None and end_town is None: # set starting/ending towns
     
-    start_town = input(
-        'Please choose a starting town: '
-        )
-    end_town = input(
-        'Please choose a ending town: '
-        )
+    start_town = input('Please choose a starting town: ')
+    end_town = input('Please choose a ending town: ')
     
     if start_town in towns and end_town in towns:
         
