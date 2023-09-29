@@ -15,7 +15,7 @@ class Graph:
         # Populate graph
         for vertice in vertices:
             
-            town_a, town_b = vertice.strip().split()
+            town_a, town_b = vertice.split()
             
             self.add_edge(nodes[town_a], nodes[town_b])
   
@@ -30,16 +30,6 @@ class Graph:
         for node in self.graph:
             
             node.visited = False
-        
-    def undirected_search(self):
-        'Function to print undirected search of graph'
-            
-        # Loop to iterate over every edge of the graph
-        for edge in self.graph:
-            
-            a, b = edge[0], edge[1]
-            
-        # return graph
     
     def breadth_first_search(self, root):
         'Function to print a BFS of graph'
@@ -258,148 +248,6 @@ class Node():
     def __eq__(self, other):
         
         return self.position == other.position
-    
-    def best_first_search(self, actual_Src, target, n):
-        'Function to print a BFS of graph'
-
-        self.graph = [[] for i in range(v)]
-        visited = [False] * n
-        pq = PriorityQueue()
-        pq.put((0, actual_Src))
-        visited[actual_Src] = True
-        
-        while pq.empty() == False:
-
-            u = pq.get()[1]
-            # Displaying the path having lowest cost
-            print(u, end=" ")
-
-            if u == target:
-
-                break
-    
-            for v, c in self.graph[u]:
-
-                if visited[v] == False:
-
-                    visited[v] = True
-                    pq.put((c, v))
-        print()
-    
-    def astar(maze, start, end):
-        'Returns a list of tuples as a path from the given start to the given end in the given maze'
-
-        # Create start and end node
-        start_node = Node(None, start)
-        start_node.g = start_node.h = start_node.f = 0
-        end_node = Node(None, end)
-        end_node.g = end_node.h = end_node.f = 0
-
-        # Initialize both open and closed list
-        open_list = []
-        closed_list = []
-
-        # Add the start node
-        open_list.append(start_node)
-
-        # Loop until you find the end
-        while len(open_list) > 0:
-
-            # Get the current node
-            current_node = open_list[0]
-            current_index = 0
-            for index, item in enumerate(open_list):
-                if item.f < current_node.f:
-                    current_node = item
-                    current_index = index
-
-            # Pop current off open list, add to closed list
-            open_list.pop(current_index)
-            closed_list.append(current_node)
-
-            # Found the goal
-            if current_node == end_node:
-                path = []
-                current = current_node
-                while current is not None:
-                    path.append(current.position)
-                    current = current.parent
-                return path[::-1] # Return reversed path
-
-            # Generate children
-            children = []
-            for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent squares
-
-                # Get node position
-                node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
-
-                # Make sure within range
-                if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
-                    continue
-
-                # Make sure walkable terrain
-                if maze[node_position[0]][node_position[1]] != 0:
-                    continue
-
-                # Create new node
-                new_node = Node(current_node, node_position)
-
-                # Append
-                children.append(new_node)
-
-            # Loop through children
-            for child in children:
-
-                # Child is on the closed list
-                for closed_child in closed_list:
-                    if child == closed_child:
-                        continue
-
-                # Create the f, g, and h values
-                child.g = current_node.g + 1
-                child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
-                child.f = child.g + child.h
-
-                # Child is already in the open list
-                for open_node in open_list:
-                    if child == open_node and child.g > open_node.g:
-                        continue
-
-                # Add the child to the open list
-                open_list.append(child)
-
-class Town():
-    'Town class for Graph'
-    
-    def __init__(self, name, position):
-        
-        self.name = name
-        self.position = position
-        self.vistited = False
-    
-    def __repr__(self): return f'{self.name} {self.position}'
-    
-    def __mod__(self, other): return dist(self.position, other.position)
-    
-    def set_visited(self): self.visited = not self.visited
-    
-    def get_visited(self): return self.visited
-    
-class Node():
-    'Node class for A* Pathfinding'
-
-    def __init__(self, parent=None, position=None):
-        
-        self.parent = parent
-        self.position = position
-
-        self.g = 0
-        self.h = 0
-        self.f = 0
-
-    def __eq__(self, other):
-        
-        return self.position == other.position
 
 towns_path = pathlib.Path(r'Program 1\coordinates.csv')
 adjacencies_path = pathlib.Path(r'Program 1\Adjacencies.txt')
@@ -444,39 +292,44 @@ while start_town is None and end_town is None: # set starting/ending towns
 while True: # main program
     
     user_input = input(
-        'Choose from:\n1 - Undirected (blind) brute-force approach\n2 - Breadth-first search\n3 - Depth-first search\n4 - ID-DFS search\n5 - Best-first search\n6 - A* search\n7 - Exit\n'
+        'Choose from:\n1 - Breadth-first search\n2 - Depth-first search\n3 - ID-DFS search\n4 - Best-first search\n5 - A* search\n6 - Exit\n'
         )
     
-    if   user_input == '1': # Undirected (blind) brute-force approach
-        
-        time = timeit.timeit(graph.undirected_search(start_town))
-        print(f'Undirected (blind) brute-force approach took {time} sec')
+    if user_input == '1': # Breadth-first search
     
-    elif user_input == '2': # Breadth-first search
-    
-        time = timeit.timeit(graph.breadth_first_search(start_town))
+        time = timeit.timeit(
+            'graph.breadth_first_search(start_town)', globals=globals()
+            )
         print(f'Breadth-first search took {time} sec')
 
-    elif user_input == '3': # Depth-first search
+    elif user_input == '2': # Depth-first search
     
-        time = timeit.timeit(graph.depth_first_search(start_town, end_town))
+        time = timeit.timeit(
+            'graph.depth_first_search(start_town, end_town)', globals=globals()
+            )
         print(f'Depth-first search took {time} sec')
 
-    elif user_input == '4': # ID-DFS search
+    elif user_input == '3': # ID-DFS search
     
-        time = timeit.timeit(graph.ID_DFS(start_town, end_town))
+        time = timeit.timeit(
+            'graph.ID_DFS(start_town, end_town)', globals=globals()
+            )
         print(f'ID-DFS search took {time} sec')
 
-    elif user_input == '5': # Best-first search
+    elif user_input == '4': # Best-first search
     
-        time = timeit.timeit(graph.best_first_search(start_town, end_town))
+        time = timeit.timeit(
+            'graph.best_first_search(start_town, end_town)', globals=globals()
+            )
         print(f'Best-first search took {time} sec')
 
-    elif user_input == '6': # A* search
+    elif user_input == '5': # A* search
     
-        time = timeit.timeit(graph.astar(start_town, end_town))
+        time = timeit.timeit(
+            'graph.astar(start_town, end_town)', globals=globals()
+            )
         print(f'A* search took {time} sec')
         
-    elif user_input == '7': # Exit
+    elif user_input == '6': # Exit
     
         break
