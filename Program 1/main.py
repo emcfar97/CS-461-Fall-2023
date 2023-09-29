@@ -1,5 +1,4 @@
 import csv, pathlib, timeit
-import csv, pathlib, timeit
 from math import dist
 from collections import defaultdict, deque
 from queue import PriorityQueue
@@ -258,6 +257,8 @@ class Node():
         
         return self.position == other.position
 
+<<<<<<< HEAD
+=======
     
     def best_first_search(self, actual_Src, target, n):
         'Function to print a BFS of graph'
@@ -401,6 +402,7 @@ class Node():
         
         return self.position == other.position
 
+>>>>>>> 3974571c411d7149a1eda7f10d78821ff889b936
 towns_path = pathlib.Path(r'Program 1\coordinates.csv')
 adjacencies_path = pathlib.Path(r'Program 1\Adjacencies.txt')
 towns = {}
