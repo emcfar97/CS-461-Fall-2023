@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 
 class Course():
@@ -17,7 +18,7 @@ def fitness():
     if 1: -0.5    
     if 2: -0.2
     elif 3: -0.4
-    else 4: 0.3
+    else: 0.3
     if 5: 0.5
     if 6: 0.2
     if 7: -0.1
