@@ -199,7 +199,6 @@ class Graph:
                     neighbor[2] = new_cost
                     neighbor[1] = current_node
 
-
 class Town():
     'Town class for Graph'
     
