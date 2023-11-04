@@ -1,0 +1,90 @@
+{
+    "cources": {
+        "SLA100A": {
+            "enrollment": 50,
+            "preferred": ["Glen", "Lock", "Banks", "Zeldin"],
+            "others": ["Numen", "Richards"]
+        },
+        "SLA100B": {
+            "enrollment": 50,
+            "preferred": ["Glen", "Lock", "Banks", "Zeldin"],
+            "others": ["Numen", "Richards"]
+        },
+        "SLA191A": {
+            "enrollment": 50,
+            "preferred": ["Glen", "Lock", "Banks", "Zeldin"],
+            "others": ["Numen", "Richards"]
+        },
+        "SLA191B": {
+            "enrollment": 50,
+            "preferred": ["Glen", "Lock", "Banks", "Zeldin"],
+            "others": ["Numen", "Richards"]
+        },
+        "SLA201": {
+            "enrollment": 50,
+            "preferred": ["Glen", "Banks", "Zeldin", "Shaw"],
+            "others": ["Numen", "Richards", "Singer"]
+        },
+        "SLA291": {
+            "enrollment": 50,
+            "preferred": ["Lock", "Banks", "Zeldin", "Singer"],
+            "others": ["Numen", "Richards", "Shaw", "Tyler"]
+        },
+        "SLA303": {
+            "enrollment": 60,
+            "preferred": ["Glen", "Zeldin", "Banks"],
+            "others": ["Numen", "Singer", "Shaw"]
+        },
+        "SLA304": {
+            "enrollment": 25,
+            "preferred": ["Glen", "Banks", "Tyler"],
+            "others": ["Numen", "Singer", "Shaw", "Richards", "Uther", "Zeldin"]
+        },
+        "SLA394": {
+            "enrollment": 20,
+            "preferred": ["Tyler", "Singer"],
+            "others": ["Richards", "Zeldin"]
+        },
+        "SLA449": {
+            "enrollment": 60,
+            "preferred": ["Tyler", "Singer", "Shaw"],
+            "others": ["Zeldin", "Uther"]
+        },
+        "SLA451": {
+            "enrollment": 100,
+            "preferred": ["Tyler", "Singer", "Shaw"],
+            "others": ["Zeldin", "Uther", "Richards", "Banks"]
+        }
+    },
+    "facilitators": [
+        "Lock",
+        "Glen",
+        "Banks",
+        "Richards",
+        "Shaw",
+        "Singer",
+        "Uther",
+        "Tyler",
+        "Numen",
+        "Zeldin"
+    ],
+    "rooms": {
+        "Slater 003": 45,
+        "Roman 216": 30,
+        "Loft 206": 75,
+        "Roman 201": 50,
+        "Loft 310": 108,
+        "Beach 201": 60,
+        "Beach 301": 75,
+        "Logos 325": 450,
+        "Frank 119": 60
+    },
+    "times": [
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:00"
+    ]
+}
