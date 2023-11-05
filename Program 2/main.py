@@ -1,16 +1,18 @@
-import csv
-from pathlib import Path
+import json
 
 class Course():
     
-    def __init__(self, name, enrollement, preferred, facilitators, others):
+    def __init__(self, name, kwargs):
         
         self.name = name
-        self.enrollment = enrollement
-        self.preferred = preferred
-        self.facilitators = facilitators
-        self.others = others
+        self.enrollment = kwargs['enrollment']
+        self.preferred = kwargs['preferred']
+        self.others = kwargs['others']
         self.fitness = 0
+    
+    def __repr__(self):
+        
+        return f'{self.name} ({self.enrollment})\nPreffered: {self.preferred}\nOthers: {self.others}'
     
 def fitness():
     
@@ -38,19 +40,12 @@ def fitness():
 
 def main(): 
 
-    times_path = Path(r'Program 2\times.txt')
-    rooms_path = Path(r'Program 2\rooms.csv')
-    
-    times = times_path.read_text().split('\n')
-    rooms = {}
-    
-    with open(rooms_path) as csv_file:
-        
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 0
-        
-        for row in csv_reader:
-            
-            rooms = row
+    data = json.load(open('Program 2\data.json'))
+    courses = [
+        Course(course, values) for course, values in data['courses'].items()
+        ]
+    facilitators = data['facilitators']
+    times = data['times']
+    rooms = data['rooms']
     
 main()
