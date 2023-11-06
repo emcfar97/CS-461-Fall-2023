@@ -34,6 +34,12 @@ class Population():
             
             self.get_fitness(activity)
         
+        for activity in self.schedule:
+            
+            activity.normalize_fitness(self.schedule)
+        
+        pass
+        
     def get_fitness(self, activity):
         
         fitness = 0
@@ -58,11 +64,11 @@ class Population():
             
             fitness -= 0.5
 
-        elif (activity.get_capacity() / activity.get_enrollment()) > 6: 
+        elif (activity.get_capacity() / activity.get_enrollment()) > 6:
             
             fitness -= 0.4
             
-        elif (activity.get_capacity() / activity.get_enrollment()) > 3: 
+        elif (activity.get_capacity() / activity.get_enrollment()) > 3:
             
             fitness -= 0.2
 
@@ -125,24 +131,24 @@ class Population():
             
             if name.startswith('SLA100'):
                 
-                other, = [
+                other = [
                     other for other in schedule 
                     if other.get_name()[:-1] == 'SLA191'
-                    ]
+                    ].pop()
 
             elif name.startswith('SLA191'):
                 
-                other, = [
+                other = [
                     other for other in schedule 
                     if other.get_name()[:-1] == 'SLA100'
-                    ]
+                    ].pop()
 
             difference = time - other.get_time()
             difference = (difference.seconds / 60 / 60) % 12
             
             if difference == 1:
                 
-                if room.startswith(('Roman', 'Beach')) and room != other.get_room():
+                if room.get_name().startswith(('Roman', 'Beach')) and room != other.get_room():
                     
                     fitness -= 0.4
                 
@@ -157,11 +163,7 @@ class Population():
                 fitness -= 0.25
         
         activity.set_fitness(fitness)
-        
-    def softmax(self):
-       
-       np.exp(x) / sum(np.exp(x))
-
+    
 class Activity():
     
     def __init__(self, course, facilitator, time, room):
@@ -175,14 +177,27 @@ class Activity():
     def __repr__(self):
         
         return f'{self.room} {self.course.name} — {datetime.strftime(self.time, "%I:%M %p")} {self.facilitator}'
-            
+    
+    def normalize_fitness(self, activities):
+        
+        fitness = [activity.get_fitness() for activity in activities]
+        return np.exp(self.fitness) / sum(np.exp(fitness))        
+        
     def set_fitness(self, fitness):
         
         self.fitness = fitness
     
+    def get_fitness(self):
+        
+        return self.fitness
+    
     def get_name(self):
         
         return self.course.name
+    
+    def get_facilitator(self):
+        
+        return self.facilitator
     
     def get_enrollment(self):
         
@@ -198,7 +213,7 @@ class Activity():
     
     def get_room(self):
         
-        return self.room()
+        return self.room
     
     def is_conflict(self, other):
         
@@ -206,13 +221,13 @@ class Activity():
         
         return self.time == other.time and self.room == other.room
         
-    def is_preffered(self):
+    def is_preferred(self):
         
-        return self.facilitator in self.preferred
+        return self.facilitator in self.course.preferred
     
     def is_other(self):
         
-        return self.facilitator in self.other
+        return self.facilitator in self.course.others
         
 class Course():
     
@@ -235,13 +250,13 @@ class Course():
         
         return self.enrollment
         
-    def is_preffered(self, facilitator):
+    def is_preferred(self, facilitator):
         
         return facilitator in self.preferred
     
     def is_other(self, facilitator):
         
-        return facilitator in self.other
+        return facilitator in self.others
 
 class Room():
     
@@ -254,11 +269,15 @@ class Room():
         
         return f'{self.name} ({self.capacity})'
     
+    def get_name(self):
+        
+        return self.name
+    
     def get_capacity(self):
         
         return self.capacity
     
-def main(): 
+def main():
 
     data = json.load(open('Program 2\data.json'))
     report = pathlib.Path('Program 2\report.txt')
